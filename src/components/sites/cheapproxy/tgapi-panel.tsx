@@ -1,28 +1,24 @@
 "use client";
 
-import { useState } from "react";
-
-const PHONE_PATTERN = /^\+\d+$/;
-
-type Toast = {
-  id: number;
-  text: string;
-};
+import { useLayoutEffect, useRef, useState } from "react";
+import { caretFromDigits, formatPhone, isCompletePhone } from "./phone-format";
 
 export function TgapiPanel() {
   const [phone, setPhone] = useState("");
   const [buyOpen, setBuyOpen] = useState(false);
   const [payOpen, setPayOpen] = useState(false);
   const [payAmount, setPayAmount] = useState(39);
-  const [toast, setToast] = useState<Toast | null>(null);
+  const [triesOpen, setTriesOpen] = useState(false);
+  const phoneRef = useRef<HTMLInputElement>(null);
+  const caretRef = useRef<number | null>(null);
 
-  const showToast = (text: string) => {
-    const next = { id: Date.now(), text };
-    setToast(next);
-    window.setTimeout(() => {
-      setToast((current) => (current?.id === next.id ? null : current));
-    }, 3000);
-  };
+  useLayoutEffect(() => {
+    const input = phoneRef.current;
+    const caret = caretRef.current;
+    if (!input || caret == null) return;
+    input.setSelectionRange(caret, caret);
+    caretRef.current = null;
+  }, [phone]);
 
   const openPay = (amount: number) => {
     setPayAmount(amount);
@@ -31,10 +27,11 @@ export function TgapiPanel() {
   };
 
   const onNext = () => {
-    if (!PHONE_PATTERN.test(phone)) {
-      showToast("请复制完整的手机号码，如: +111223344");
+    if (!isCompletePhone(phone)) {
+      setTriesOpen(true);
       return;
     }
+    setTriesOpen(false);
     openPay(39);
   };
 
@@ -69,12 +66,34 @@ export function TgapiPanel() {
             <b>delete your account</b>. Enter your number and we will send you a
             confirmation code via Telegram (not SMS).
           </p>
+          {triesOpen ? (
+            <div className="cp-try-alert" role="alert">
+              <button
+                type="button"
+                className="cp-try-close"
+                aria-label="关闭"
+                onClick={() => setTriesOpen(false)}
+              >
+                ×
+              </button>
+              Sorry, too many tries. Please try again later.
+            </div>
+          ) : null}
           <div className="cp-label">Your Phone Number</div>
           <input
+            ref={phoneRef}
             className="cp-input"
-            placeholder="+122334455"
+            placeholder="+12223334455"
             value={phone}
-            onChange={(event) => setPhone(event.target.value.replace(/\s/g, ""))}
+            inputMode="tel"
+            onChange={(event) => {
+              const raw = event.target.value;
+              const cursor = event.target.selectionStart ?? raw.length;
+              const digitsBefore = raw.slice(0, cursor).replace(/\D/g, "").length;
+              const next = formatPhone(raw);
+              caretRef.current = caretFromDigits(next, digitsBefore);
+              setPhone(next);
+            }}
           />
           <div className="cp-hint">
             Please enter your number in{"\u00a0"}
@@ -163,14 +182,6 @@ export function TgapiPanel() {
             </div>
           </div>
         </>
-      ) : null}
-      {toast ? (
-        <div className="cp-toast" role="status">
-          <span className="cp-toast-icon" aria-hidden="true">
-            !
-          </span>
-          {toast.text}
-        </div>
       ) : null}
     </>
   );

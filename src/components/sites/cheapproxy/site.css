@@ -238,6 +238,36 @@
   font-weight: 700;
 }
 
+.cp-try-alert {
+  position: relative;
+  margin: 0 0 20px;
+  padding: 15px 32px 15px 15px;
+  border: 1px solid #ebccd1;
+  border-radius: 4px;
+  background: #f2dede;
+  color: #a94442;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.cp-try-close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  border: 0;
+  background: transparent;
+  color: #000;
+  font-size: 21px;
+  font-weight: 700;
+  line-height: 1;
+  opacity: 0.2;
+  cursor: pointer;
+}
+
+.cp-try-close:hover {
+  opacity: 0.5;
+}
+
 .cp-label {
   display: inline-block;
   margin: 0 0 5px;
