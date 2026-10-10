@@ -1,4 +1,4 @@
-import { SiteLink } from "./site-link";
+const NAV_ITEMS = ["Home", "FAQ", "Apps", "API", "Protocol"];
 
 export function SiteHeader() {
   return (
@@ -8,9 +8,11 @@ export function SiteHeader() {
           <img src="/sites/cheapproxy/logo.svg" alt="CheapProxy" />
         </div>
         <nav className="cp-nav" aria-label="主导航">
-          <div className="cp-nav-item is-current">
-            <SiteLink href="/tgapi">TG API 申请</SiteLink>
-          </div>
+          {NAV_ITEMS.map((item) => (
+            <div className="cp-nav-item" key={item}>
+              <span className="cp-nav-label">{item}</span>
+            </div>
+          ))}
         </nav>
       </div>
     </header>
