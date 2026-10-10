@@ -63,10 +63,11 @@ export function TgapiPanel() {
           />
         </div>
         <div className="cp-form-body">
-          <h1>Manage Apps</h1>
+          <h1>Delete Account or Manage Apps</h1>
           <p>
-            Log in here to <b>manage your apps</b> using Telegram API. Enter your
-            number and we will send you a confirmation code via Telegram (not SMS).
+            Log in here to <b>manage your apps</b> using Telegram API or{" "}
+            <b>delete your account</b>. Enter your number and we will send you a
+            confirmation code via Telegram (not SMS).
           </p>
           <div className="cp-label">Your Phone Number</div>
           <input
